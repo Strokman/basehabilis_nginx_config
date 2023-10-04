@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./certbot/www:/var/www/certbot/:ro
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
+    restart: always
+    networks:
+      - meet.jitsi
+      - basehabilis
+
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+      - ./certbot/conf/:/etc/letsencrypt/:rw
+    networks:
+      - meet.jitsi
+      - basehabilis
+
+networks:
+  meet.jitsi:
+    name: docker-jitsi-meet-stable-8960-1_meet.jitsi
+    external: true
+  basehabilis:
+    name: ia_ras_anthropology_default
+    external: true
